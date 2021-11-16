@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockTrackerService", "StockTrackerService.csproj", "{DDF4ECC9-2A62-46BF-A5E9-1E7726330013}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DDF4ECC9-2A62-46BF-A5E9-1E7726330013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF4ECC9-2A62-46BF-A5E9-1E7726330013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF4ECC9-2A62-46BF-A5E9-1E7726330013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF4ECC9-2A62-46BF-A5E9-1E7726330013}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {79BD42F7-E5EC-46D9-8A1A-4AF99653DB9A}
+	EndGlobalSection
+EndGlobal
