@@ -13,11 +13,11 @@ namespace StockTrackerService.Controllers
     [ApiController]
     public class StockTrackerController : ControllerBase
     {
-        
+        private readonly IStockListingRepo _repo;
 
-        public StockTrackerController()
+        public StockTrackerController(IStockListingRepo repo)
         {
-            
+            _repo = repo;
             
         }
 
@@ -26,7 +26,8 @@ namespace StockTrackerService.Controllers
         {
             //TODO: REPLACE WITH ACTUAL GET ACTION THAT PUSHES TO MESSAGE HUB
             Console.WriteLine("Looking for current value of " + symbol + "\n\n");
-            return Ok();
+            StockListing listing = _repo.getStockListingBySymbol(symbol);
+            return Ok(listing);
         }
     }
 }
