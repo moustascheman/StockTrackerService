@@ -30,8 +30,9 @@ namespace StockTrackerService
         public void ConfigureServices(IServiceCollection services)
         {
             //INITIALIZE DB HERE
-            services.AddDbContext<StockTrackerContext>(opt => opt.UseDb2());
+            services.AddDbContext<StockTrackerContext>(opt => opt.UseDb2(@Configuration.GetConnectionString("dbstring"), p=>p.SetServerInfo(IBMDBServerType.LUW)));
             services.AddScoped<IStockListingRepo, StockListingRepo>();
+            Console.WriteLine(Configuration.GetConnectionString("dbstring"));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

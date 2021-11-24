@@ -5,14 +5,18 @@ using Microsoft.EntityFrameworkCore;
 namespace StockTrackerService.Models
 {
 	public class StockTrackerContext : DbContext
-	{
-        private readonly DB2Connection _connection;
-    
-        public StockTrackerContext()
+	{    
+
+        public StockTrackerContext(DbContextOptions<StockTrackerContext> opt) : base(opt)
         {
-            String connString = "";
-			_connection = new DB2Connection(connString);
-            _connection.Open();
+
+        }
+
+        public void testQuery()
+        {
+            string query = "SELECT * FROM stockcsv.stocks WHERE Code = 'a' AND timestamp = (SELECT MAX(timestamp) from stockcsv.stocks where Code='a')";
+            bool existing = base.Database.CanConnect();
+            Console.WriteLine(existing);
         }
 
 
