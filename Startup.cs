@@ -8,10 +8,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using StockTrackerService.Data;
+using IBM.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using StockTrackerService.Models;
 
 namespace StockTrackerService
 {
@@ -28,6 +30,7 @@ namespace StockTrackerService
         public void ConfigureServices(IServiceCollection services)
         {
             //INITIALIZE DB HERE
+            services.AddDbContext<StockTrackerContext>(opt => opt.UseDb2());
             services.AddScoped<IStockListingRepo, StockListingRepo>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
