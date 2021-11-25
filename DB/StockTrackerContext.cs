@@ -12,6 +12,9 @@ namespace StockTrackerService.Models
 
         }
 
+        public DbSet<StockListing> stocks { get; set; }
+
+
         public void testQuery()
         {
             string query = "SELECT * FROM stockcsv.stocks WHERE Code = 'a' AND timestamp = (SELECT MAX(timestamp) from stockcsv.stocks where Code='a')";

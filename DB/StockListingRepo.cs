@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StockTrackerService.Models;
+using System.Linq;
 
 namespace StockTrackerService.Data
 {
@@ -13,15 +14,7 @@ namespace StockTrackerService.Data
         }
         
         public StockListing getStockListingBySymbol(string Sym){
-            //temporary value
-            //PLEASE REPLACE WITH ACTUAL IMPLEMENTATION WHEN DB CONNECTED
-            _context.testQuery();
-
-            StockListing listing = new StockListing();
-            listing.Code = "IBM";
-            listing.Price = 12.40f;
-            listing.Timestamp = 124;
-            return listing;
+            return _context.stocks.FromSqlRaw("SELECT * From stockcsv.stocks where Code = {0} AND Timestamp IN (SELECT MAX(Timestamp) from stockcsv.stocks where code = {0})", Sym).FirstOrDefault();
         }
 
     }
