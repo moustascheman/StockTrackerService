@@ -28,11 +28,28 @@ namespace StockTrackerService.Controllers
         [HttpGet("{symbol}", Name = "GetStockBySymbol")]
         public ActionResult GetStockBySymbol(string symbol)
         {
-            //TODO: REPLACE WITH ACTUAL GET ACTION THAT PUSHES TO MESSAGE HUB
+            if(symbol == null)
+            {
+                return BadRequest();
+            }
             Console.WriteLine("Looking for current value of " + symbol + "\n\n");
-            StockListing listing = _repo.getStockListingBySymbol(symbol);
+            try
+            {
+
+                string lowerSym = symbol.Trim().ToLower();
+                StockListing listing = _repo.getStockListingBySymbol(lowerSym);
+                if(listing == null)
+                {
+                    throw new Exception();
+                }
+                PublishToMessageBus(listing);
+                return Ok(listing);
+            }
+            catch(Exception e)
+            {
+                return NotFound();
+            }
             
-            return Ok(listing);
         }
 
         private void PublishToMessageBus(StockListing listing)
@@ -42,7 +59,6 @@ namespace StockTrackerService.Controllers
             Message<Null, string> messTest = new Message<Null, string> { Value = MessageString };
             string topicName = getTopicName(listing.Code);
             producer.Produce(topicName, messTest);
-
         }
 
         private String getTopicName(string symbol)
