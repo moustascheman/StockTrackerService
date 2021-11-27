@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using StockTrackerService.Models;
+using Confluent.Kafka.DependencyInjection;
+using Confluent.Kafka;
 
 namespace StockTrackerService
 {
@@ -32,7 +34,17 @@ namespace StockTrackerService
             //INITIALIZE DB HERE
             services.AddDbContext<StockTrackerContext>(opt => opt.UseDb2(@Configuration.GetConnectionString("dbstring"), p=>p.SetServerInfo(IBMDBServerType.LUW)));
             services.AddScoped<IStockListingRepo, StockListingRepo>();
-            Console.WriteLine(Configuration.GetConnectionString("dbstring"));
+                        
+            services.AddSingleton<ProducerConfig>(opt => {
+                ProducerConfig config = new ProducerConfig();
+                config.BootstrapServers = Configuration["Kafka:default:BootstrapServers"];
+                config.SaslUsername = Configuration["Kafka:default:SaslUsername"];
+                config.SaslPassword = Configuration["Kafka:default:SaslPassword"];
+                config.SecurityProtocol = SecurityProtocol.SaslSsl;
+                config.SaslMechanism = SaslMechanism.Plain;
+                config.SslEndpointIdentificationAlgorithm = SslEndpointIdentificationAlgorithm.Https;
+                return config;
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
