@@ -59,25 +59,18 @@ namespace StockTrackerService.Controllers
             IProducer<Null, string> producer = new ProducerBuilder<Null, string>(_proConfig).Build();
             string MessageString = listing.Code + ";" + listing.price.ToString() + ";"+listing.timestamp.ToString();
             Message<Null, string> myMessage = new Message<Null, string> { Value = MessageString };
-            myMessage.Headers = new Headers();
-            myMessage.Headers.Add(new Header("StockTrackerService", null));
+            myMessage.Headers = getSortingHeaders(listing.Code);
             
             producer.Produce("4471ProjectTopic", myMessage);
         }
 
-        private String getSortingHeader(string symbol)
+        private Headers getSortingHeaders(string symbol)
         {
-            string topicName ="";
-            char firstLetter = symbol[0];
-            if (char.IsLetter(firstLetter))
-            {
-                topicName = "StockTrackerTopic_" + firstLetter.ToString().ToUpper();
-            }
-            else
-            {
-                topicName = "StockTrackerTopic_Other";
-            }
-            return topicName;
+            Headers headers = new Headers();
+            headers.Add(new Header("StockTrackerService", null));
+            headers.Add(new Header("1", null));
+            headers.Add(new Header(symbol, null));
+            return headers;
         }
 
         private StockDTO mapListingToDTO(StockListing listing)
