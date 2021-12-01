@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using StockTrackerService.Data;
 using StockTrackerService.DTOs;
 using StockTrackerService.Models;
@@ -17,11 +18,13 @@ namespace StockTrackerService.Controllers
     {
         private readonly IStockListingRepo _repo;
         private readonly ProducerConfig _proConfig;
+        private readonly ILogger<StockTrackerController> _logger;
 
-        public StockTrackerController(IStockListingRepo repo, ProducerConfig config)
+        public StockTrackerController(IStockListingRepo repo, ProducerConfig config, ILogger<StockTrackerController> logger)
         {
             _repo = repo;
             _proConfig = config;
+            _logger = logger;
             
             
         }
@@ -29,6 +32,10 @@ namespace StockTrackerService.Controllers
         [HttpGet("{symbol}", Name = "GetStockBySymbol")]
         public ActionResult GetStockBySymbol(string symbol)
         {
+            //LOGGING
+            var dt1 = DateTimeOffset.UtcNow;
+            _logger.LogInformation("Starting request at: {t}", dt1);
+            ////
             if(symbol == null)
             {
                 return BadRequest();
@@ -43,12 +50,22 @@ namespace StockTrackerService.Controllers
                 {
                     throw new Exception();
                 }
-                StockDTO listingDTO = mapListingToDTO(listing); 
+                StockDTO listingDTO = mapListingToDTO(listing);
+                ///
+                _logger.LogInformation("Retrieval completed, publishing to message bus at {t}", DateTimeOffset.UtcNow);
+                ///
                 PublishToMessageBus(listingDTO);
+                ///
+                var dt2 = DateTimeOffset.UtcNow;
+                var dt3 = (dt2 - dt1).TotalMilliseconds.ToString();
+                _logger.LogInformation("Published at {t}", dt2);
+                _logger.LogInformation("Total time for request: {t}", dt3);
+                ///
                 return Ok(listingDTO);
             }
             catch(Exception e)
             {
+                _logger.LogWarning("Stock Listing was not found");
                 return NotFound();
             }
             
